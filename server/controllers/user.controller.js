@@ -135,7 +135,7 @@ const updateProfile = async (req, res) => {
           fullName: fullName,
           profilePic: uploadResponse.secure_url,
         },
-        { new: true }
+        { new: true },
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while update user profile" });
@@ -154,7 +154,7 @@ const updateProfile = async (req, res) => {
         {
           profilePic: uploadResponse.secure_url,
         },
-        { new: true }
+        { new: true },
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while update user profile" });
@@ -166,7 +166,7 @@ const updateProfile = async (req, res) => {
         {
           fullName: fullName,
         },
-        { new: true }
+        { new: true },
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while updating user profile" });
