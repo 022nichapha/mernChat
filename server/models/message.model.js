@@ -1,6 +1,5 @@
 const mongoose = require("mongoose");
-const { type } = require("node:os");
-const {Schema, Model} = mongoose;
+const { Schema, model } = mongoose;
 const MessageSchema = new Schema(
   {
     text: { type: String },

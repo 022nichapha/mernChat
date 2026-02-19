@@ -3,48 +3,43 @@ const dotenv = require("dotenv");
 const cors = require("cors");
 const mongoose = require("mongoose");
 const cookieParser = require("cookie-parser");
-
+const userRouter = require("./routers/user.router");
 dotenv.config();
 
-// ===== App =====
 const app = express();
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT;
 const BASE_URL = process.env.BASE_URL;
 const MONGODB = process.env.MONGODB;
 
-// ===== Middleware =====
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cookieParser());
-
+app.get("/", (req, res) => {
+  res.send("Welcome to MERN CHAT SERVER 110");
+});
 app.use(
   cors({
-    origin: BASE_URL,
+    origin: [BASE_URL],
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
     credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE"],
-    allowedHeaders: ["Content-Type", "Authorization", "access-token"],
-  }),
+  })
 );
+app.use(cookieParser());
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
-// ===== Test Route =====
-app.get("/", (req, res) => {
-  res.send("API is running...");
-});
-
-// ===== Routes =====
-app.use("/api/users", require("./routers/user.router"));
-
-// ===== Connect MongoDB =====
+app.use("/api/v1/user/", userRouter);
+//connect to DB
 if (!MONGODB) {
-  console.log("No MONGODB URL found");
+  console.log("No MONGODB URL found in .env");
 } else {
   mongoose
     .connect(MONGODB)
-    .then(() => console.log("Connect to database successfully"))
-    .catch((error) => console.log("MongoDB connection error:", error));
+    .then(() => {
+      console.log("Connect to database successfully");
+    })
+    .catch((error) => {
+      console.log("Mongo DB connection error:", error);
+    });
 }
-
-// ===== Start Server =====
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log("Server on http://localhost:" + PORT);
 });
