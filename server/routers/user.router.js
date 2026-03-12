@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const {
-  signUp,
+  register,
   login,
   logOut,
 
@@ -10,7 +10,7 @@ const {
 } = require("../controllers/user.controller");
 const { protectedRoute } = require("../middlewares/auth.middleware");
 
-router.post("/signup", signUp);
+router.post("/register", register);
 router.post("/login", login);
 router.post("/logout", logOut);
 router.put("/update-profile", protectedRoute, updateProfile);

@@ -18,7 +18,7 @@ const LoginPage = () => {
     };
 
     return (
-        <div className="min-h-screen grid lg:grid-cols-2">
+        <div className="min-h-dvh grid lg:grid-cols-2">
             {/* left side */}
             <div className="flex flex-col justify-center items-center p-6 sm:p-12">
                 <div className="w-full max-w-md space-y-8">
@@ -88,6 +88,7 @@ const LoginPage = () => {
                         <button type="submit" className="btn btn-primary w-full" disabled={isLoggingIn}>
                             {isLoggingIn ? (
                                 <>
+                                    {/* spin คือให้ไอคอนหมุนติ้วๆ */}
                                     <Loader2 className="h-5 w-5 animate-spin" />
                                     Loading...
                                 </>

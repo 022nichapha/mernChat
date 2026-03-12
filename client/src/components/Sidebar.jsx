@@ -3,16 +3,23 @@ import { useChatStore } from "../store/useChatStore";
 import { useAuthStore } from "../store/useAuthStore";
 import SidebarSkeleton from "./skeletons/SidebarSkeleton";
 import { Users } from "lucide-react";
+import { formatMessageTime } from "../lib/utils";
 
 const Sidebar = () => {
-    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading } = useChatStore();
+    const { getUsers, users, selectedUser, setSelectedUser, isUsersLoading, subscribeToSidebarMessages, unsubscribeFromSidebarMessages } = useChatStore();
 
     const { onlineUsers } = useAuthStore();
     const [showOnlineOnly, setShowOnlineOnly] = useState(false);
 
+    // รูปแบบของ useEffect useEffect( () => {}, []);
     useEffect(() => {
         getUsers();
-    }, [getUsers]);
+        subscribeToSidebarMessages();
+
+        return () => {
+            unsubscribeFromSidebarMessages();
+        }
+    }, [getUsers, subscribeToSidebarMessages, unsubscribeFromSidebarMessages]);
 
     const filteredUsers = showOnlineOnly
         ? users.filter((user) => onlineUsers.includes(user._id))
@@ -21,14 +28,14 @@ const Sidebar = () => {
     if (isUsersLoading) return <SidebarSkeleton />;
 
     return (
-        <aside className="h-full w-20 lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
+        <aside className="h-full w-full lg:w-72 border-r border-base-300 flex flex-col transition-all duration-200">
             <div className="border-b border-base-300 w-full p-5">
                 <div className="flex items-center gap-2">
                     <Users className="size-6" />
-                    <span className="font-medium hidden lg:block">Contacts</span>
+                    <span className="font-medium">Contacts</span>
                 </div>
                 {/* TODO: Online filter toggle */}
-                <div className="mt-3 hidden lg:flex items-center gap-2">
+                <div className="mt-3 flex items-center gap-2">
                     <label className="cursor-pointer flex items-center gap-2">
                         <input
                             type="checkbox"
@@ -53,7 +60,7 @@ const Sidebar = () => {
               ${selectedUser?._id === user._id ? "bg-base-300 ring-1 ring-base-300" : ""}
             `}
                     >
-                        <div className="relative mx-auto lg:mx-0">
+                        <div className="relative mx-0">
                             <img
                                 src={user.profilePic || "/avatar.png"}
                                 alt={user.name}
@@ -68,10 +75,24 @@ const Sidebar = () => {
                         </div>
 
                         {/* User info - only visible on larger screens */}
-                        <div className="hidden lg:block text-left min-w-0">
-                            <div className="font-medium truncate">{user.fullName}</div>
-                            <div className="text-sm text-zinc-400">
-                                {onlineUsers.includes(user._id) ? "Online" : "Offline"}
+                        <div className="text-left w-full min-w-0 pr-1">
+                            <div className="flex justify-between items-center mb-1">
+                                <div className="font-medium truncate">{user.fullName}</div>
+                                {user.latestMessage && (
+                                    <span className="text-xs text-zinc-500 ml-2 whitespace-nowrap">
+                                        {formatMessageTime(user.latestMessage.createdAt)}
+                                    </span>
+                                )}
+                            </div>
+                            <div className="flex justify-between items-center">
+                                <div className="text-sm text-zinc-400 truncate pr-2">
+                                    {user.latestMessage?.text || (user.latestMessage?.image ? "Sent an image" : (onlineUsers.includes(user._id) ? "Online" : "Offline"))}
+                                </div>
+                                {user.unreadCount > 0 && (
+                                    <div className="badge badge-primary badge-sm shrink-0 scale-90">
+                                        {user.unreadCount}
+                                    </div>
+                                )}
                             </div>
                         </div>
                     </button>

@@ -6,6 +6,7 @@ import toast from "react-hot-toast";
 const MessageInput = () => {
     const [text, setText] = useState("");
     const [imagePreview, setImagePreview] = useState(null);
+    const [isSending, setIsSending] = useState(false);
     const fileInputRef = useRef(null);
     const { sendMessage } = useChatStore();
 
@@ -31,7 +32,9 @@ const MessageInput = () => {
     const handleSendMessage = async (e) => {
         e.preventDefault();
         if (!text.trim() && !imagePreview) return;
+        if (isSending) return; // ป้องกันการส่งซ้ำ
 
+        setIsSending(true);
         try {
             await sendMessage({
                 text: text.trim(),
@@ -44,6 +47,8 @@ const MessageInput = () => {
             if (fileInputRef.current) fileInputRef.current.value = "";
         } catch (error) {
             console.error("Failed to send message:", error);
+        } finally {
+            setIsSending(false);
         }
     };
 
@@ -88,7 +93,7 @@ const MessageInput = () => {
 
                     <button
                         type="button"
-                        className={`hidden sm:flex btn btn-circle
+                        className={`flex btn btn-circle
                      ${imagePreview ? "text-emerald-500" : "text-zinc-400"}`}
                         onClick={() => fileInputRef.current?.click()}
                     >
@@ -98,7 +103,7 @@ const MessageInput = () => {
                 <button
                     type="submit"
                     className="btn btn-sm btn-circle"
-                    disabled={!text.trim() && !imagePreview}
+                    disabled={(!text.trim() && !imagePreview) || isSending}
                 >
                     <Send size={22} />
                 </button>

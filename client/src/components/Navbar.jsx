@@ -33,10 +33,13 @@ const Navbar = () => {
                             <span className="hidden sm:inline">Settings</span>
                         </Link>
 
+                        {/* ถ้าเข้าสู่ระบบแล้ว (authUser มีค่า) จะแสดงเมนู Profile และปุ่ม Logout */}
+                        {/* ถ้ายังไม่เข้าสู่ระบบ (authUser เป็น null) จะไม่แสดงส่วนนี้ (แสดงแค่ปุ่ม Settings) */}
                         {authUser && (
                             <>
                                 <Link to={"/profile"} className={`btn btn-sm gap-2`}>
                                     <User className="size-5" />
+                                    {/* hidden คือ ซ่อน sm:inline คือ แสดงในจอคอม */}
                                     <span className="hidden sm:inline">Profile</span>
                                 </Link>
 

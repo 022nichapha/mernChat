@@ -6,7 +6,8 @@ dotenv.config();
 const secret = process.env.SECRET;
 const node_mode = process.env.node_mode;
 const cloudinary = require("../configs/cloudinary");
-const signUp = async (req, res) => {
+
+const register = async (req, res) => {
   const { fullName, email, password } = req.body;
   if (!fullName || !email || !password) {
     return res.status(400).json({ message: "All fields are required" });
@@ -48,6 +49,7 @@ const signUp = async (req, res) => {
         fullName: newUser.fullName,
         email: newUser.email,
         profilePic: newUser.profilePic,
+        token: token,
       });
     } else {
       res.status(400).json({ message: "Invalid user data" });
@@ -85,7 +87,7 @@ const login = async (req, res) => {
       maxAge: 24 * 60 * 60 * 1000, //MS
       httpOnly: true, //XSS Attacks
       sameSite: "strict", //CSRF attacks,
-      secure: node_mode !== "development",
+      secure: node_mode === "production",
     });
 
     console.log("Token generated ans cookie set");
@@ -95,6 +97,7 @@ const login = async (req, res) => {
       fullName: user.fullName,
       email: user.email,
       profilePic: user.profilePic,
+      token: token,
     });
   } catch (error) {
     console.log(error);
@@ -135,7 +138,7 @@ const updateProfile = async (req, res) => {
           fullName: fullName,
           profilePic: uploadResponse.secure_url,
         },
-        { new: true },
+        { new: true }
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while update user profile" });
@@ -154,7 +157,7 @@ const updateProfile = async (req, res) => {
         {
           profilePic: uploadResponse.secure_url,
         },
-        { new: true },
+        { new: true }
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while update user profile" });
@@ -166,7 +169,7 @@ const updateProfile = async (req, res) => {
         {
           fullName: fullName,
         },
-        { new: true },
+        { new: true }
       );
       if (!updatedUser) {
         res.status(500).json({ message: "Error while updating user profile" });
@@ -194,7 +197,7 @@ const checkAuth = (req, res) => {
 };
 
 const userController = {
-  signUp,
+  register,
   login,
   logOut,
   updateProfile,
