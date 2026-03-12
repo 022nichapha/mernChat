@@ -44,14 +44,26 @@ const App = () => {
       <Navbar />
 
       <Routes>
-        <Route path="/" element={authUser ? <HomePage /> : <Navigate to="/login" />} />
+        <Route
+          path="/"
+          element={authUser ? <HomePage /> : <Navigate to="/login" />}
+        />
         {/* !authUser? ถ้ายังไม่มี user ให้ไปหน้า signup : ถ้ามี user แล้ว ให้ไปหน้า / ส่วนของ / คือหน้าแรก*/}
-        <Route path="/signup" element={!authUser ? <SignUpPage /> : <Navigate to="/" />} />
+        <Route
+          path="/signup"
+          element={!authUser ? <SignUpPage /> : <Navigate to="/" />}
+        />
         {/* !authUser? ถ้ายังไม่มี user ให้ไปหน้า login : ถ้ามี user แล้ว ให้ไปหน้า / ส่วนของ / คือหน้าแรก*/}
-        <Route path="/login" element={!authUser ? <LoginPage /> : <Navigate to="/" />} />
+        <Route
+          path="/login"
+          element={!authUser ? <LoginPage /> : <Navigate to="/" />}
+        />
         <Route path="/settings" element={<SettingsPage />} />
         {/* ถ้ามี authUser (Login แล้ว) ให้ไปหน้า ProfilePage : ถ้าไม่มี (ไม่มี token) ให้เด้งกลับไปหน้า Login */}
-        <Route path="/profile" element={authUser ? <ProfilePage /> : <Navigate to="/login" />} />
+        <Route
+          path="/profile"
+          element={authUser ? <ProfilePage /> : <Navigate to="/login" />}
+        />
       </Routes>
 
       <Toaster />

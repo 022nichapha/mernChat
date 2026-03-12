@@ -1,3 +1,5 @@
+require("dotenv").config();
+
 const express = require("express");
 const dotenv = require("dotenv");
 const cors = require("cors");
@@ -21,7 +23,7 @@ app.use(
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
     allowedHeaders: ["Content-Type", "Authorization", "x-access-token"],
     credentials: true,
-  })
+  }),
 );
 app.use(cookieParser());
 app.use(express.json());
@@ -45,5 +47,3 @@ if (!MONGODB) {
 server.listen(PORT, () => {
   console.log("Server on http://localhost:" + PORT);
 });
-
-
